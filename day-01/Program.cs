@@ -10,13 +10,12 @@
     public static int PartOne(List<int> left, List<int> right)
     {
         return Enumerable.Zip(left, right)
-          .Aggregate(0, (acc, x) => acc + Math.Abs(x.First - x.Second));
+            .Aggregate(0, (sum, x) => sum + Math.Abs(x.First - x.Second));
     }
 
     public static int PartTwo(List<int> left, List<int> right)
     {
-        return left.Select(value => right.FindAll(x => x == value).Count * value)
-                   .Aggregate(0, (acc, x) => acc + x);
+        return left.Aggregate(0, (sum, x) => sum + right.FindAll(y => x == y).Count * x);
     }
 
 
@@ -25,16 +24,12 @@
         var input = File.ReadAllLines(path).ToList();
         var (left, right) = (new List<int>(), new List<int>());
 
-        foreach (var line in input)
+        input.ForEach(line =>
         {
-            var values = line.Split("   ");
-            var (leftValue, rightValue) = (values[0], values[1]);
-
-            _ = int.TryParse(leftValue, out int res);
-            left.Add(res);
-            _ = int.TryParse(rightValue, out res);
-            right.Add(res);
-        }
+            var values = line.Split("   ").Select(int.Parse).ToList();
+            left.Add(values[0]);
+            right.Add(values[1]);
+        });
 
         left.Sort();
         right.Sort();
